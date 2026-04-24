@@ -168,6 +168,21 @@ class TestChorusLapilli(unittest.TestCase):
         tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
         assert tiles[6].text == ""
 
+    def test_cannot_move_to_non_adjacent_square(self):
+        '''check if piece prevented from move to a non adjacent square'''
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+        tiles[0].click()
+        tiles[1].click()
+        tiles[2].click()
+        tiles[3].click()
+        tiles[4].click()
+        tiles[5].click()
+        tiles[0].click()
+        tiles[8].click()
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+        self.assertTileIs(tiles[0], self.SYMBOL_X)
+        self.assertTileIs(tiles[8], self.SYMBOL_BLANK)
+
 # ================= [DO NOT MAKE ANY CHANGES BELOW THIS LINE] =================
 
 if __name__ != '__main__':
