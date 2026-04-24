@@ -18,21 +18,53 @@ function Square({ value, onSquareClick }) {
 export default function Board() {
   const [xIsNext, setXIsNext] = useState(true)
   const [squares, setSquares] = useState(Array(9).fill(null))
+  const [selectedSquares, setSelectedSquares] = useState(null)
+
+  function isAdjacent (from, to) {
+    const row1 = Math.floor(from / 3)
+    const col1 = from % 3
+    const row2 = Math.floor(to / 3)
+    const col2 = to % 3
+
+    return Math.abs(row1 - row2) <= 1 && Math.abs(col1 - col2) <= 1
+  }
 
   function handleClick(i) {
-    if (squares[i] || calculateWinner(squares)) {
+    if (calculateWinner(squares)) {
       return
     }
+
     const currentPlayer = xIsNext ? "X" : "O"
     const pieceCount = squares.filter(s => s === currentPlayer).length
-    if (pieceCount >= 3) {
+    
+    const nextSquares = squares.slice()
+
+    if (pieceCount < 3) {
+      if (squares[i]) return
+
+      nextSquares[i] = currentPlayer
+      setSquares(nextSquares)
+      setXIsNext(!xIsNext)
       return
     }
-    const nextSquares = squares.slice()
-    nextSquares[i] = currentPlayer
-    
-    setSquares(nextSquares)
-    setXIsNext(!xIsNext)
+
+    if (selectedSquares === null){
+      if (squares[i] === currentPlayer) {
+        setSelectedSquares(i)
+      }
+      return
+    }
+
+    if (squares[i] === null && isAdjacent(selectedSquares, i)) {
+      nextSquares[selectedSquares] = null
+      nextSquares[i] = currentPlayer
+
+      setSquares(nextSquares)
+      setSelectedSquares(null)
+      setXIsNext(!xIsNext)
+    } else {
+      setSelectedSquares(null)
+    }
   }
 
   const winner = calculateWinner(squares)
