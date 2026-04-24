@@ -23,12 +23,14 @@ export default function Board() {
     if (squares[i] || calculateWinner(squares)) {
       return
     }
-    const nextSquares = squares.slice()
-    if (xIsNext) {
-      nextSquares[i] = "X"
-    } else {
-      nextSquares[i] = "O"
+    const currentPlayer = xIsNext ? "X" : "O"
+    const pieceCount = squares.filter(s => s === currentPlayer).length
+    if (pieceCount >= 3) {
+      return
     }
+    const nextSquares = squares.slice()
+    nextSquares[i] = currentPlayer
+    
     setSquares(nextSquares)
     setXIsNext(!xIsNext)
   }
