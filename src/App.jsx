@@ -59,6 +59,15 @@ export default function Board() {
       nextSquares[selectedSquares] = null
       nextSquares[i] = currentPlayer
 
+      const playerHasCenter = squares[4] === currentPlayer
+      const movingFromCenter = selectedSquares === 4
+      const winsAfterMove = calculateWinner(nextSquares)
+
+      if (playerHasCenter && !movingFromCenter && !winsAfterMove) {
+        setSelectedSquares(null)
+        return
+      }
+
       setSquares(nextSquares)
       setSelectedSquares(null)
       setXIsNext(!xIsNext)
